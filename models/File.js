@@ -13,6 +13,6 @@ const fileSchema = new moongoose.Schema({
     }
 }); 
 
-const file = moongoose.model('file', fileSchema);
+const File = moongoose.model('File', fileSchema);
 
-module.exports = file;
+module.exports = File;

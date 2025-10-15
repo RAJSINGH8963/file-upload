@@ -25,8 +25,8 @@ const cloudinary = require('./config/cloudinary');
 cloudinary.cloudinaryConnect();
 // api route mount karna hai
 
-const upload = reqire('./routes/FileUpload');
-app.use('/api/v1/upload', upload);
+const Upload = require('./routes/FileUpload');
+app.use('/api/v1/upload', Upload);
 
 // activate server 
 app.listen(PORT, () => {
