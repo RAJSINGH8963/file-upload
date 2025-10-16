@@ -24,3 +24,158 @@ exports.localFileUpload = async(req , res ) => {
      console.log(error);
     }
 }
+function isfileTypeSupported(fileType , supportedTypes){
+    return supportedTypes.includes(fileType) ;
+}
+const cloudinary = require('cloudinary').v2;
+async function uploadFileToCloudinary(file , folder  , quality ){
+    const options = {folder};
+    options.resource_type = "auto" ;
+
+    if(quality) options.quality = quality ;
+    return await cloudinary.uploader.upload(file.tempFilePath , options) ;
+                      
+    
+}
+// image upload ka handler
+exports.imageUpload = async(req , res ) => {
+    try{
+        // fetch file   
+        const {name , tags , email } = req.body ; 
+        console.log(name , tags , email );
+
+        const file = req.files.imageFile ;
+        console.log("Image File AAgyi JRR " , file );
+        //  validation 
+        const supportedTypes = ["jpg" , "jpeg" , "png"];
+       
+        const fileType = file.name.split('.')[1].toLowerCase() ;
+        console.log("File Type " , fileType );
+
+        if(!isfileTypeSupported(fileType , supportedTypes)){
+            return res.status(400).json({
+                success:false,
+                message:'File type not supported. Only jpg , jpeg , png are supported'
+            })
+        }
+      
+        // file format supported hai 
+        const response = await uploadFileToCloudinary(file , "practice") ;
+        
+        //  db me entry save farni hai 
+        const fileData = await File.create({
+            name,
+            tags,
+            email,
+            imageUrl: response.secure_url    
+        });
+        res.json({
+            success:true,
+            message:'Image File Upload Successfully ', 
+            // file : newFile
+            }); 
+    }catch(error){
+        console.log("not able to upload image file");
+        console.log(error);
+        res.status(400).json({
+            success:false,
+            message:'Something went wrong while uploading image file'
+        })
+    }
+
+}
+  
+
+// video upload ka handler
+
+
+exports.videoUpload = async(req , res ) => { 
+    try{
+        // fetch file   
+        const {name , tags , email} = req.body ;
+        console.log(name , tags , email );
+
+        const file = req.files.videoFile ; 
+        console.log("Video File AAgyi JRR " , file );
+        //  validation 
+        const supportedTypes = ["mp4" , "mov" ];
+        const fileType = file.name.split('.')[1].toLowerCase() ;
+        console.log("File Type " , fileType );
+        if(!isfileTypeSupported(fileType , supportedTypes)){
+            return res.status(400).json({
+                success:false,
+                message:'File type not supported. Only mp4 , mov are supported'
+            })
+        }   
+
+        const response = await uploadFileToCloudinary(file , "practice") ;
+        console.log("Cloudinary response " , response );
+        //  db me entry save farni hai  
+        const fileData = await File.create({
+            name,
+            tags,   
+            email,
+            imageUrl: response.secure_url    
+        }); 
+        res.json({
+            success:true,
+            message:'Video File Upload Successfully ', 
+            // file : newFile
+            }); 
+
+     }
+    catch(error){
+        console.log("not able to upload video file");
+        console.log(error);
+        res.status(400).json({
+            success:false,
+            message:'Something went wrong while uploading video file'
+        })
+    }
+}
+
+exports.imageSizeReducer = async(req , res ) => {
+    try{
+         // fetch file   
+        const {name , tags , email } = req.body ; 
+        console.log(name , tags , email );
+
+        const file = req.files.imageFile ;
+        console.log("Image File AAgyi JRR " , file );
+        //  validation 
+        const supportedTypes = ["jpg" , "jpeg" , "png"];
+       
+        const fileType = file.name.split('.')[1].toLowerCase() ;
+        console.log("File Type " , fileType );
+       
+        if(!isfileTypeSupported(fileType , supportedTypes)){
+            return res.status(400).json({
+                success:false,
+                message:'File type not supported. Only jpg , jpeg , png are supported'
+            })
+        }
+      
+        // file format supported hai 
+        const response = await uploadFileToCloudinary(file , "practice" , 80) ;
+        
+        //  db me entry save farni hai 
+        const fileData = await File.create({
+            name,
+            tags,
+            email,
+            imageUrl: response.secure_url    
+        });
+        res.json({
+            success:true,
+            message:'Image File Upload Successfully ', 
+            // file : newFile
+            }); 
+    }catch(error){
+        console.log("not able to upload image file");
+        console.log(error); 
+        res.status(400).json({
+            success:false,
+            message:'Something went wrong while uploading image file'
+        });
+    }
+}

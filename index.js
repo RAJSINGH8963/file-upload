@@ -12,8 +12,16 @@ app.use(express.json());
 
 const fileupload = require('express-fileupload'); 
 
-app.use(fileupload());
+app.use(fileupload({
+    useTempFiles:true,
+    tempFileDir:'/tmp/' 
+}));
 
+// const videoUpload = require('express-fileupload');
+// app.use(videoUpload({
+//     useTempFiles:true,
+//     tempFileDir:'/tmp/' 
+// }));
 // db se connect  karna hai 
 
 const db = require('./config/database');
@@ -26,6 +34,7 @@ cloudinary.cloudinaryConnect();
 // api route mount karna hai
 
 const Upload = require('./routes/FileUpload');
+const { videoUpload } = require('./controllers/fileUpload');
 app.use('/api/v1/upload', Upload);
 
 // activate server 
