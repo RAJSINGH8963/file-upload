@@ -3,6 +3,8 @@
 const express = require('express');
 const app = express();
 
+const nodemailer = require('nodemailer');
+
 // Port find karna hai
 require('dotenv').config(); 
 const PORT = process.env.PORT || 3000 ; 
@@ -17,11 +19,7 @@ app.use(fileupload({
     tempFileDir:'/tmp/' 
 }));
 
-// const videoUpload = require('express-fileupload');
-// app.use(videoUpload({
-//     useTempFiles:true,
-//     tempFileDir:'/tmp/' 
-// }));
+
 // db se connect  karna hai 
 
 const db = require('./config/database');
